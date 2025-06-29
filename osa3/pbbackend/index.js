@@ -1,8 +1,9 @@
 const express= require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 app.use(express.json())
-
+app.use(cors())
 morgan.token('body', (request) => JSON.stringify(request.body))
 const tiny = ':method :url :status :res[content-length] - :response-time ms'
 app.use(morgan(`${tiny} :body`))
@@ -46,8 +47,9 @@ app.get('/info', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
+    const deletedPerson = persons.find(person => person.id === id)
     persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
+    response.json(deletedPerson)
 })
 
 const generateId = () => {
